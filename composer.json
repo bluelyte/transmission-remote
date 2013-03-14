@@ -4,7 +4,7 @@
     "keywords": [ "transmission", "bittorrent", "torrent", "torrents", "cli" ],
     "license": "BSD-2-Clause",
     "require": {
-        "php": ">=5.3.3",
+        "php": ">=5.3.3"
     },
     "autoload": {
         "classmap": [

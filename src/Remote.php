@@ -36,9 +36,9 @@ class Remote
 
     /**
      * Output of the last executed daemon command
-     * @var array
+     * @var string
      */
-    protected $output = array();
+    protected $output = null;
 
     /**
      * Exit status of the last executed daemon command
@@ -106,13 +106,13 @@ class Remote
      */
     protected function execute($command)
     {
-        exec($command, $this->output, $this->status);
+        $this->output = system($command, $this->status);
     }
 
     /**
      * Returns the output of the last daemon command.
      *
-     * @return array
+     * @return string
      */
     public function getOutput()
     {

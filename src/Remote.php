@@ -137,8 +137,6 @@ class Remote
         if ($this->started) {
             return;
         }
-
-        $this->execute('transmission-daemon');
         
         $command = 'transmission-remote -C'
             . ' -' . ($this->encryption ? 'er' : 'ep')
@@ -146,6 +144,11 @@ class Remote
             . ' -' . ($this->upnp ? 'm' : 'M')
             . ($this->downloadPath ? ' -w ' . $this->downloadPath : '');
         $this->execute($command);
+
+        $this->execute('transmission-remote -l');
+        if ($this->getStatus() == 1) {
+            $this->execute('transmission-daemon');
+        }
 
         $this->started = true;
     }

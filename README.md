@@ -39,7 +39,6 @@ $remote->startTorrents();
 
 // Debugging
 var_dump($remote->getOutput(), $remote->getStatus());
-*/
 ```
 
 ## License

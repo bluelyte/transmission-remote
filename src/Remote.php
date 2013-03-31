@@ -106,7 +106,12 @@ class Remote
      */
     protected function execute($command)
     {
-        $this->output = system($command, $this->status);
+        $process = proc_open($command, array(1 => array('pipe', 'w')), $pipes);
+        $this->output = stream_get_contents($pipes[1]);
+        fclose($pipes[1]);
+        $status = proc_get_status($process);
+        $this->status = $status['exitcode'];
+        proc_close($process);
     }
 
     /**

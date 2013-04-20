@@ -53,6 +53,18 @@ class Remote
     protected $started = false;
 
     /**
+     * Username used to authenticate with the daemon
+     * @var string
+     */
+    protected $username = 'transmission';
+
+    /**
+     * Password used to authenticate with the daemon
+     * @var string
+     */
+    protected $password = 'transmission';
+
+    /**
      * Sets a flag for whether peers using encryption should be required or only 
      * preferred.
      *
@@ -100,6 +112,18 @@ class Remote
     }
 
     /**
+     * Sets the username and password used for authentication.
+     *
+     * @param string $username
+     * @param string $password
+     */
+    public function setCredentials($username, $password)
+    {
+        $this->username = $username;
+        $this->password = $password;
+    }
+
+    /**
      * Execute a shell command.
      *
      * @param string $command
@@ -136,6 +160,16 @@ class Remote
     }
 
     /**
+     * Returns a command flag for authentication.
+     *
+     * @return string
+     */
+    protected function getAuthFlag()
+    {
+        $auth = '--auth=' . $this->username . ':' . $this->password;
+    }
+
+    /**
      * Starts the daemon.
      */
     public function start()
@@ -143,15 +177,17 @@ class Remote
         if ($this->started) {
             return;
         }
-        
-        $command = 'transmission-remote -C'
+
+        $auth = $this->getAuthFlag();
+
+        $command = 'transmission-remote -C ' . $auth
             . ' -' . ($this->encryption ? 'er' : 'ep')
             . ' -p ' . $this->port
             . ' -' . ($this->upnp ? 'm' : 'M')
             . ($this->downloadPath ? ' -w ' . $this->downloadPath : '');
         $this->execute($command);
 
-        $this->execute('transmission-remote -l');
+        $this->execute('transmission-remote ' . $auth . ' -l');
         if ($this->getStatus() == 1) {
             $this->execute('transmission-daemon');
         }
@@ -170,7 +206,7 @@ class Remote
         if (is_array($paths)) {
             $paths = implode(' ', $paths);
         }
-        $this->execute('transmission-remote -a ' . $paths);
+        $this->execute('transmission-remote ' . $this->getAuthFlag() . ' -a ' . $paths);
     }
 
     /**
@@ -178,6 +214,6 @@ class Remote
      */
     public function startTorrents()
     {
-        $this->execute('transmission-remote -tall --start');
+        $this->execute('transmission-remote ' . $this->getAuthFlag() . ' -tall --start');
     }
 }

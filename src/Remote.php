@@ -166,7 +166,7 @@ class Remote
      */
     protected function getAuthFlag()
     {
-        $auth = '--auth=' . $this->username . ':' . $this->password;
+        return '--auth=' . $this->username . ':' . $this->password;
     }
 
     /**
